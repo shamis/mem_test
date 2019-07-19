@@ -22,24 +22,28 @@ main([CountStr]) ->
             erlang:halt(0)
     end,
     net_kernel:start([mem_test, shortnames]),
-    ok = mnesia:delete_schema([node()]),
+    % ok = mnesia:delete_schema([node()]),
     ok = application:start(recon),
-    ok = mnesia:create_schema([node()]),
-    application:start(mnesia),
-    timer:sleep(5),
+    % ok = mnesia:create_schema([node()]),
+    ok = application:start(mnesia),
     mnesia:create_table(mafiapp_friends,
                         [{attributes, record_info(fields, mafiapp_friends)}]),
     io:format("Table created~n"),
     recon_alloc:set_unit(megabyte),
     io:format("Memory used : ~p MB~nMemory unused : ~p MB~n", [recon_alloc:memory(used), recon_alloc:memory(unused)]),
     io:format("Adding ~p rows~n", [Count]),
-    _ = [add_friend("Don Corleone" ++ integer_to_list(N), [], [boss], boss) || N <- lists:seq(1, 1000000)],
-    io:format("Added ~p rows~n", [Count]),
+    Result = mnesia:transaction(fun add_friend_2/6, ["Don Corleone", [], [boss], boss, true, Count]),
+    % Result = add_friend_2("Don Corleone", [], [boss], boss, false, Count),
+    io:format("Result : ~p~n", [Result]),
+    % _ = add_friend("Don Corleone", [], [boss], boss, Count),
+    % Result = [add_friend_1("Don Corleone" ++ integer_to_list(N), [], [boss], boss) || N <- lists:seq(1, Count)], 
+    io:format("Rows in the table : ~p~n", [mnesia:table_info(mafiapp_friends, size)]),
     io:format("Memory used : ~p MB~nMemory unused : ~p MB~n", [recon_alloc:memory(used), recon_alloc:memory(unused)]),
     mnesia:delete_table(mafiapp_friends),
     io:format("Deleted the table~n"),
     io:format("Memory used : ~p MB~nMemory unused : ~p MB~n", [recon_alloc:memory(used), recon_alloc:memory(unused)]),
     ok = application:stop(mnesia),
+    timer:sleep(300),
     io:format("Stopped mnesia~n"),
     io:format("Memory used : ~p MB~nMemory unused : ~p MB~n", [recon_alloc:memory(used), recon_alloc:memory(unused)]),
     ok = mnesia:delete_schema([node()]),
@@ -53,11 +57,48 @@ main(Args) ->
 %% Internal functions
 %%====================================================================
 
-add_friend(Name, Contact, Info, Expertise) ->
+add_friend(Name, Contact, Info, Expertise, Count) ->
     F = fun() ->
-                mnesia:write(#mafiapp_friends{name=Name,
+            lists:map(fun(C) ->
+                mnesia:write(#mafiapp_friends{name=Name ++ integer_to_list(C),
                                               contact=Contact,
                                               info=Info,
                                               expertise=Expertise})
+                end, lists:seq(1, Count))
         end,
     mnesia:activity(transaction, F).
+
+add_friend_1(Name, Contact, Info, Expertise) ->
+    F = fun() ->
+            mnesia:write(#mafiapp_friends{name=Name,
+                                            contact=Contact,
+                                            info=Info,
+                                            expertise=Expertise})
+        end,
+    mnesia:activity(transaction, F).
+
+add_friend_2(_Name, _Contact, _Info, _Expertise, _IsTransaction, 0) -> ok;
+add_friend_2(Name, Contact, Info, Expertise, true, Count) ->
+    mnesia:write(#mafiapp_friends{name=Name ++ integer_to_list(Count),
+                                    contact=Contact,
+                                    info=Info,
+                                    expertise=Expertise}),
+    add_friend_2(Name, Contact, Info, Expertise, true, Count - 1);
+add_friend_2(Name, Contact, Info, Expertise, false, Count) ->
+    mnesia:dirty_write(#mafiapp_friends{name=Name ++ integer_to_list(Count),
+                                            contact=Contact,
+                                            info=Info,
+                                            expertise=Expertise}),
+    add_friend_2(Name, Contact, Info, Expertise, false, Count - 1).
+
+% add_friend_3(Name, Contact, Info, Expertise, 0) ->
+% add_friend_3(Name, Contact, Info, Expertise, Count) ->
+%     spawn_link(fun() ->
+%         mnesia:transaction(fun() ->
+%             mnesia:write(#mafiapp_friends{name=Name ++ integer_to_list(Count),
+%                                           contact=Contact,
+%                                           info=Info,
+%                                           expertise=Expertise}),
+%         end)
+%     end),
+%     receive
