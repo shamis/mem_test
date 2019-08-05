@@ -11,4 +11,4 @@ Build
 Run
 ---
 
-    $ _build/default/bin/mem_test 10000
+    $ _build/default/bin/mem_test 1000000
