@@ -1,0 +1,11 @@
+install:
+  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
+language: erlang
+otp_release:
+  - 20.3
+  - 21.3
+  - 22.0
+script:
+  - ./rebar3 escriptize
+  - _build/default/bin/mem_test 1000000
+  
