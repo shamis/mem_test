@@ -1,4 +1,4 @@
-name: Erlang CI
+name: mem leak test
 
 on: [push]
 
