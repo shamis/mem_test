@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Escriptize
-      run: rebar3 compile
+      run: rebar3 escriptize
     - name: Run tests
       run: _build/default/bin/mem_test 1000000
