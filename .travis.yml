@@ -4,8 +4,8 @@ language: erlang
 otp_release:
   - 20.3
   - 21.3
-  - 22.0
+  - 22.2
 script:
   - ./rebar3 escriptize
-  - _build/default/bin/mem_test 1000000
+  - _build/default/bin/mem_test 10000000
   
