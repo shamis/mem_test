@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Check formatting
+      run: rebar3 steamroll --check
     - name: Escriptize
       run: rebar3 escriptize
     - name: Run tests
