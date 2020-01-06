@@ -8,4 +8,5 @@ otp_release:
 script:
   - ./rebar3 escriptize
   - _build/default/bin/mem_test 10000000
+  - ./rebar3 steamroll --check
   
