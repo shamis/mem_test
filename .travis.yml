@@ -6,7 +6,7 @@ otp_release:
   - 21.3
   - 22.2
 script:
+  - ./rebar3 steamroll --check
   - ./rebar3 escriptize
   - _build/default/bin/mem_test 10000000
-  - ./rebar3 steamroll --check
   
