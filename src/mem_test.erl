@@ -23,8 +23,11 @@ main([CountStr]) ->
     application:ensure_all_started(mnesia_rocksdb),
     application:start(mnesia),
     mnesia_rocksdb:register(),
+    io:format("Creating table~n"),
     mnesia:create_table(
         mafiapp_friends,
+        % [{attributes, record_info(fields, mafiapp_friends)}]
+        % [{disc_copies, [node()]}, {attributes, record_info(fields, mafiapp_friends)}]
         [{rocksdb_copies, [node()]}, {attributes, record_info(fields, mafiapp_friends)}]
     ),
     io:format("Table created~n"),
@@ -36,10 +39,10 @@ main([CountStr]) ->
     io:format("Adding ~p rows~n", [Count]),
     % Result = mnesia:transaction(fun add_friend_2/6, ["Don Corleone", [], [boss], boss, true, Count]),
     % Result = add_friend_2("Don Corleone", [], [boss], boss, false, Count),
-    _ = add_friend("Don Corleone", [], [boss], boss, Count),
+    % _ = add_friend("Don Corleone", [], [boss], boss, Count),
     % _ = add_friend_3("Don Corleone", [], [boss], boss, Count),
     % _ = [add_friend_1("Don Corleone" ++ integer_to_list(N), [], [boss], boss) || N <- lists:seq(1, Count)],
-    % _ = add_friend_4(Count),
+    _ = add_friend_4(Count),
     % io:format("Result : ~p~n", [Result]),
     io:format("Rows in the table : ~p~n", [mnesia:table_info(mafiapp_friends, size)]),
     io:format(
