@@ -21,7 +21,9 @@ main([CountStr]) ->
     ok = application:start(recon),
     % ok = mnesia:create_schema([node()]),
     ok = application:start(mnesia),
-    mnesia:create_table(mafiapp_friends, [{attributes, record_info(fields, mafiapp_friends)}]),
+    ok = application:start(mnesia_rocskdb),
+    mnesia_rocksdb:register(),
+    mnesia:create_table(mafiapp_friends, [{rocksdb_copies, [node()]}, {attributes, record_info(fields, mafiapp_friends)}]),
     io:format("Table created~n"),
     recon_alloc:set_unit(megabyte),
     io:format(

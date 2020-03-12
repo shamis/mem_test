@@ -1,6 +1,12 @@
 {"1.1.0",
-[{<<"recon">>,{pkg,<<"recon">>,<<"2.5.0">>},0}]}.
+[{<<"mnesia_rocksdb">>,{pkg,<<"tivan_rocksdb">>,<<"1.0.0">>},0},
+ {<<"recon">>,{pkg,<<"recon">>,<<"2.5.0">>},0},
+ {<<"rocksdb">>,{pkg,<<"rocksdb">>,<<"1.4.0">>},1},
+ {<<"sext">>,{pkg,<<"sext">>,<<"1.4.1">>},1}]}.
 [
 {pkg_hash,[
- {<<"recon">>, <<"2F7FCBEC2C35034BADE2F9717F77059DC54EB4E929A3049CA7BA6775C0BD66CD">>}]}
+ {<<"mnesia_rocksdb">>, <<"D8AAB44953D29E715BF3CA099A4BB8012CB3814136A6759B0D4559AF8F8AD23B">>},
+ {<<"recon">>, <<"2F7FCBEC2C35034BADE2F9717F77059DC54EB4E929A3049CA7BA6775C0BD66CD">>},
+ {<<"rocksdb">>, <<"F8E817D475E10A05B8BEB4A67E944A2FAB0029CBB0646CC93C503D931A062F11">>},
+ {<<"sext">>, <<"14559B219FAF11F9EBA7A350DFFC69C966C668439C54947A42D67167002798C4">>}]}
 ].
