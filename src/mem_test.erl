@@ -21,7 +21,7 @@ main([CountStr]) ->
     ok = application:start(recon),
     % ok = mnesia:create_schema([node()]),
     ok = application:start(mnesia),
-    ok = application:start(mnesia_rocskdb),
+    ok = application:start(mnesia_rocksdb),
     mnesia_rocksdb:register(),
     mnesia:create_table(
         mafiapp_friends,
